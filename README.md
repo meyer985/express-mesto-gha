@@ -2,9 +2,6 @@
 
 # Проект Mesto фронтенд + бэкенд
 
-#Check#Check#Check#Check#Check#Check#Check#Check#Check
-#Check#Check#Check#Check#Check#Check#Check#Check#Check
-
 ## Настройка бейджей статуса тестов
 
 Перед началом работы над проектом рекомендуется исправить бейджи, отражающие статус прохождения тестов.
