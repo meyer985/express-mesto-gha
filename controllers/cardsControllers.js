@@ -4,7 +4,10 @@ const { errorHandler } = require("./errorHandler");
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      err.message = "Ошибка сервера";
+      res.status(500).send(err);
+    });
 };
 
 module.exports.postCard = (req, res) => {
@@ -13,13 +16,32 @@ module.exports.postCard = (req, res) => {
 
   Card.create(newCardEntry)
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        err.message = "Переданы некорректные данные при создании карточки";
+        res.status(400).send(err);
+      } else {
+        err.message = "Ошибка сервера";
+        res.status(500).send(err);
+      }
+    });
 };
 
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => {
+      res.status(404).send({ message: "Карточка c указанным Id не найдена" });
+    })
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === "CastError") {
+        err.message = "Карточка не найдена";
+        res.status(400).send(err);
+      } else {
+        err.message = "Ошибка сервера";
+        res.status(500).send(err);
+      }
+    });
 };
 
 module.exports.putLike = (req, res) => {
@@ -34,8 +56,19 @@ module.exports.putLike = (req, res) => {
       upsert: true,
     }
   )
+    .orFail(() => {
+      res.status(404).send({ message: "Передан несуществующий _id карточки" });
+    })
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === "CastError") {
+        err.message = "Переданы некорректные данные карточки";
+        res.status(400).send(err);
+      } else {
+        err.message = "Ошибка сервера";
+        res.status(500).send(err);
+      }
+    });
 };
 
 module.exports.deleteLike = (req, res) => {
@@ -50,6 +83,17 @@ module.exports.deleteLike = (req, res) => {
       upsert: true,
     }
   )
+    .orFail(() => {
+      res.status(404).send({ message: "Передан несуществующий _id карточки" });
+    })
     .then((card) => res.send({ data: card }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => {
+      if (err.name === "CastError") {
+        err.message = "Переданы некорректные данные карточки";
+        res.status(400).send(err);
+      } else {
+        err.message = "Ошибка сервера";
+        res.status(500).send(err);
+      }
+    });
 };
