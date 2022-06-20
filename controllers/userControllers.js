@@ -1,10 +1,10 @@
 const User = require("../models/users");
-const { errorHandler } = require("./errorHandler");
+const { userErrorHandler } = require("./errorHandler");
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => userErrorHandler(err, res));
 };
 
 module.exports.getUser = (req, res) => {
@@ -15,13 +15,13 @@ module.exports.getUser = (req, res) => {
       }
       res.send({ data: user });
     })
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => userErrorHandler(err, res));
 };
 
 module.exports.addUser = (req, res) => {
   User.create(req.body)
     .then((user) => res.send({ data: user }))
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => userErrorHandler(err, res));
 };
 
 module.exports.updateUser = (req, res) => {
@@ -36,7 +36,7 @@ module.exports.updateUser = (req, res) => {
       }
       res.send({ data: user });
     })
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => userErrorHandler(err, res));
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -50,5 +50,5 @@ module.exports.updateAvatar = (req, res) => {
       }
       res.send({ data: user });
     })
-    .catch((err) => errorHandler(err, res));
+    .catch((err) => userErrorHandler(err, res));
 };
