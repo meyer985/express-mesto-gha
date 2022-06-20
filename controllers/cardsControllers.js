@@ -53,7 +53,6 @@ module.exports.putLike = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     }
   )
     .orFail(() => {
@@ -80,20 +79,21 @@ module.exports.deleteLike = (req, res) => {
     {
       new: true,
       runValidators: true,
-      upsert: true,
     }
   )
-    .orFail(() => {
-      res.status(404).send({ message: "Передан несуществующий _id карточки" });
-    })
+    .orFail(() => {})
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === "CastError") {
-        err.message = "Переданы некорректные данные карточки";
-        res.status(400).send(err);
-      } else {
-        err.message = "Ошибка сервера";
-        res.status(500).send(err);
-      }
+      res.send(err.message);
+
+      // if (err.name === "CastError" || "DocumentNotFoundError") {
+      //   err.message = "Переданы некорректные данные карточки";
+      //   res.status(400).send(err);
+      // } else if (err.message === "Not found") {
+      //   res.status(404).send(err);
+      // } else {
+      //   err.message = "Ошибка сервера";
+      //   res.status(500).send(err);
+      // }
     });
 };

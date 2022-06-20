@@ -1,12 +1,9 @@
 module.exports.errorHandler = (err, res) => {
-  if (err.name === "CastError") {
-    err.message = "Пользователь или карточка не найдены";
-    res.status(404).send(err);
-  } else if (err.name === "ValidationError") {
-    err.message = "Введены некорректные данные";
-    res.status(400).send(err);
+  if (err.name === "ValidationError") {
+    res.status(400).send("Переданы некорректные данные");
+  } else if (err.name === "CastError" || err.message === "noEntry") {
+    res.status(404).send({ message: "Пользователь не найден" });
   } else {
-    err.message = "Ошибка сервера";
-    res.status(500).send(Error);
+    res.status(500).send({ message: "Ошибка сервера" });
   }
 };

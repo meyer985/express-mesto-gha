@@ -4,43 +4,24 @@ const { errorHandler } = require("./errorHandler");
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      err.message = "Ошибка сервера";
-      res.status(500).send(err);
-    });
+    .catch((err) => errorHandler(err, res));
 };
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
-    .orFail(() => {
-      res
-        .status(404)
-        .send({ message: "Пользователь c указанным Id не найден" });
-    })
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === "CastError") {
-        err.message = "Пользователь не найден";
-        res.status(400).send(err);
-      } else {
-        err.message = "Ошибка сервера";
-        res.status(500).send(err);
+    .then((user) => {
+      if (!user) {
+        throw new Error("noEntry");
       }
-    });
+      res.send({ data: user });
+    })
+    .catch((err) => errorHandler(err, res));
 };
 
 module.exports.addUser = (req, res) => {
   User.create(req.body)
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        err.message = "Введены некорректные данные";
-        res.status(400).send(err);
-      } else {
-        err.message = "Ошибка сервера";
-        res.status(500).send(err);
-      }
-    });
+    .catch((err) => errorHandler(err, res));
 };
 
 module.exports.updateUser = (req, res) => {
@@ -48,19 +29,14 @@ module.exports.updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() =>
-      res.status(404).send({ message: "Пользователь c указанным Id не найден" })
-    )
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        err.message = "Введены некорректные данные";
-        res.status(400).send(err);
-      } else {
-        err.message = "Ошибка сервера";
-        res.status(500).send(err);
+
+    .then((user) => {
+      if (!user) {
+        throw new Error("noEntry");
       }
-    });
+      res.send({ data: user });
+    })
+    .catch((err) => errorHandler(err, res));
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -68,17 +44,11 @@ module.exports.updateAvatar = (req, res) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() =>
-      res.status(404).send({ message: "Пользователь c указанным Id не найден" })
-    )
-    .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.name === "ValidationError") {
-        err.message = "Введены некорректные данные";
-        res.status(400).send(err);
-      } else {
-        err.message = "Ошибка сервера";
-        res.status(500).send(err);
+    .then((user) => {
+      if (!user) {
+        throw new Error("noEntry");
       }
-    });
+      res.send({ data: user });
+    })
+    .catch((err) => errorHandler(err, res));
 };
