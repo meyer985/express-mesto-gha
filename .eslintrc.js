@@ -4,15 +4,15 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-  extends: "airbnb-base",
+  extends: 'airbnb-base',
   parserOptions: {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: "latest",
+    ecmaVersion: 'latest',
   },
-  plugins: ["react"],
+  plugins: ['react'],
   rules: {
-    "no-underscore-dangle": 0,
+    'no-underscore-dangle': 'off',
   },
 };
