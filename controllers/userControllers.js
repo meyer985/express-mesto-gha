@@ -1,5 +1,5 @@
-const User = require("../models/users");
-const { userErrorHandler } = require("./errorHandler");
+const User = require('../models/users');
+const { userErrorHandler } = require('./errorHandler');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -11,7 +11,7 @@ module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new Error('noEntry');
       }
       res.send({ data: user });
     })
@@ -32,7 +32,7 @@ module.exports.updateUser = (req, res) => {
 
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new Error('noEntry');
       }
       res.send({ data: user });
     })
@@ -46,7 +46,7 @@ module.exports.updateAvatar = (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new Error('noEntry');
       }
       res.send({ data: user });
     })

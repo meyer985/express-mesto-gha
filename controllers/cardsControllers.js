@@ -1,5 +1,5 @@
-const Card = require("../models/cards");
-const { cardErrorHandler } = require("./errorHandler");
+const Card = require('../models/cards');
+const { cardErrorHandler } = require('./errorHandler');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -20,7 +20,7 @@ module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new Error('noCard');
       }
       res.send({ data: card });
     })
@@ -36,11 +36,11 @@ module.exports.putLike = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new Error('noCard');
       }
       res.send({ data: card });
     })
@@ -56,11 +56,11 @@ module.exports.deleteLike = (req, res) => {
     {
       new: true,
       runValidators: true,
-    }
+    },
   )
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new Error('noCard');
       }
       res.send({ data: card });
     })
