@@ -1,5 +1,5 @@
 const Card = require('../models/cards');
-const { cardErrorHandler } = require('./errorHandler');
+const { cardErrorHandler } = require('../utils/errorHandler');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -12,7 +12,7 @@ module.exports.postCard = (req, res) => {
   newCardEntry.owner = req.user;
 
   Card.create(newCardEntry)
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(201).send({ data: card }))
     .catch((err) => cardErrorHandler(err, res));
 };
 
@@ -35,7 +35,6 @@ module.exports.putLike = (req, res) => {
     },
     {
       new: true,
-      runValidators: true,
     },
   )
     .then((card) => {
@@ -55,7 +54,6 @@ module.exports.deleteLike = (req, res) => {
     },
     {
       new: true,
-      runValidators: true,
     },
   )
     .then((card) => {

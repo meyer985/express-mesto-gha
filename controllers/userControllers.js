@@ -1,5 +1,5 @@
 const User = require('../models/users');
-const { userErrorHandler } = require('./errorHandler');
+const { userErrorHandler } = require('../utils/errorHandler');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -20,7 +20,7 @@ module.exports.getUser = (req, res) => {
 
 module.exports.addUser = (req, res) => {
   User.create(req.body)
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(201).send({ data: user }))
     .catch((err) => userErrorHandler(err, res));
 };
 
@@ -29,7 +29,6 @@ module.exports.updateUser = (req, res) => {
     new: true,
     runValidators: true,
   })
-
     .then((user) => {
       if (!user) {
         throw new Error('noEntry');
