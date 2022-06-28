@@ -29,6 +29,17 @@ module.exports.addUser = (req, res) => {
     .catch((err) => userErrorHandler(err, res));
 };
 
+module.exports.getUserInfo = (req, res) => {
+  User.findById(req.user)
+    .then((user) => {
+      if (!user) {
+        throw new Error("noEntry");
+      }
+      res.send({ data: user });
+    })
+    .catch((err) => userErrorHandler(err, res));
+};
+
 module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
@@ -59,6 +70,7 @@ module.exports.updateAvatar = (req, res) => {
 
 module.exports.login = (req, res) => {
   const { email, password } = req.body;
+
   User.findOne({ email })
     .then((user) =>
       bcrypt.compare(password, user.password).then((matching) => {
