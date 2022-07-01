@@ -72,7 +72,8 @@ module.exports.login = (req, res) => {
   const { email, password } = req.body;
 
   User.findOne({ email })
-    .then((user) =>
+    .select("+password")
+    .then((user) => {
       bcrypt.compare(password, user.password).then((matching) => {
         if (!matching) {
           /*надо обработать ошибку*/
@@ -80,7 +81,8 @@ module.exports.login = (req, res) => {
         }
         const token = jwt.sign({ _id: user._id }, "mesto-key");
         res.send(token);
-      })
-    )
+      });
+    })
+
     .catch((err) => userErrorHandler(err, res));
 };
