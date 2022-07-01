@@ -29,8 +29,19 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send(statusCode === 500 ? "Ошибка сервера" : message);
+  console.log(err.code);
+  if (err.name === "ValidationError") {
+    res
+      .status(400)
+      .send({ message: "Переданы некорректные данные пользователя" });
+  } else if (err.code === 11000) {
+    res.status(409).send({ message: "Указанный email уже зарегистрирован" });
+  } else {
+    const { statusCode = 500, message } = err;
+    res
+      .status(statusCode)
+      .send(statusCode === 500 ? "Ошибка сервера" : message);
+  }
 });
 
 app.listen(PORT, () => console.log("App is working..."));

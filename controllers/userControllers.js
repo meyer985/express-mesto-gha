@@ -8,13 +8,13 @@ const {
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send({ data: users }))
     .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
@@ -25,7 +25,7 @@ module.exports.getUser = (req, res) => {
     .catch(next);
 };
 
-module.exports.addUser = (req, res) => {
+module.exports.addUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
   bcrypt
     .hash(password, 9)
@@ -34,7 +34,7 @@ module.exports.addUser = (req, res) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res) => {
+module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user)
     .then((user) => {
       if (!user) {
@@ -45,7 +45,7 @@ module.exports.getUserInfo = (req, res) => {
     .catch(next);
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
@@ -59,7 +59,7 @@ module.exports.updateUser = (req, res) => {
     .catch(next);
 };
 
-module.exports.updateAvatar = (req, res) => {
+module.exports.updateAvatar = (req, res, next) => {
   User.findByIdAndUpdate(req.user._id, req.body, {
     new: true,
     runValidators: true,
@@ -73,19 +73,25 @@ module.exports.updateAvatar = (req, res) => {
     .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   User.findOne({ email })
     .select("+password")
     .then((user) => {
-      bcrypt.compare(password, user.password).then((matching) => {
-        if (!matching) {
-          next(new badAuthError("Неправильный логин или пароль"));
-        }
-        const token = jwt.sign({ _id: user._id }, "mesto-key");
-        res.send(token);
-      });
+      if (!user) {
+        throw new badAuthError("Неправильный логин или пароль");
+      }
+      bcrypt
+        .compare(password, user.password)
+        .then((matching) => {
+          if (!matching) {
+            throw new badAuthError("Неправильный логин или пароль");
+          }
+          const token = jwt.sign({ _id: user._id }, "mesto-key");
+          res.status(200).send(token);
+        })
+        .catch(next);
     })
 
     .catch(next);
