@@ -1,10 +1,15 @@
 const Card = require("../models/cards");
-const { cardErrorHandler } = require("../utils/errorHandler");
+const {
+  notFoundError,
+  badRequestError,
+  badAuthError,
+  serverError,
+} = require("../utils/errorHandler");
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => cardErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.postCard = (req, res) => {
@@ -13,7 +18,7 @@ module.exports.postCard = (req, res) => {
 
   Card.create(newCardEntry)
     .then((card) => res.status(201).send({ data: card }))
-    .catch((err) => cardErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.deleteCard = (req, res) => {
@@ -21,16 +26,16 @@ module.exports.deleteCard = (req, res) => {
   Card.findById(id)
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new notFoundError("Карточка не найдена");
       } else if (req.user._id !== card.owner.toString()) {
-        throw new Error("badAuth");
+        throw new badAuthError("Ошибка авторизации");
       } else {
         Card.findByIdAndRemove(id)
           .then((card) => res.send({ data: card }))
-          .catch((err) => cardErrorHandler(err, res));
+          .catch(next);
       }
     })
-    .catch((err) => cardErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.putLike = (req, res) => {
@@ -45,11 +50,11 @@ module.exports.putLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new notFoundError("Карточка не найдена");
       }
       res.send({ data: card });
     })
-    .catch((err) => cardErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.deleteLike = (req, res) => {
@@ -64,9 +69,9 @@ module.exports.deleteLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        throw new Error("noCard");
+        throw new notFoundError("Карточка не найдена");
       }
       res.send({ data: card });
     })
-    .catch((err) => cardErrorHandler(err, res));
+    .catch(next);
 };

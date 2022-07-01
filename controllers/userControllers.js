@@ -1,23 +1,28 @@
 const User = require("../models/users");
-const { userErrorHandler } = require("../utils/errorHandler");
+const {
+  notFoundError,
+  badRequestError,
+  badAuthError,
+  serverError,
+} = require("../utils/errorHandler");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send({ data: users }))
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new notFoundError("Пользователь не найден");
       }
       res.send({ data: user });
     })
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.addUser = (req, res) => {
@@ -26,18 +31,18 @@ module.exports.addUser = (req, res) => {
     .hash(password, 9)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) => res.status(201).send({ data: user }))
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.getUserInfo = (req, res) => {
   User.findById(req.user)
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new notFoundError("Пользователь не найден");
       }
       res.send({ data: user });
     })
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.updateUser = (req, res) => {
@@ -47,11 +52,11 @@ module.exports.updateUser = (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new notFoundError("Пользователь не найден");
       }
       res.send({ data: user });
     })
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.updateAvatar = (req, res) => {
@@ -61,11 +66,11 @@ module.exports.updateAvatar = (req, res) => {
   })
     .then((user) => {
       if (!user) {
-        throw new Error("noEntry");
+        throw new notFoundError("Пользователь не найден");
       }
       res.send({ data: user });
     })
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };
 
 module.exports.login = (req, res) => {
@@ -76,13 +81,12 @@ module.exports.login = (req, res) => {
     .then((user) => {
       bcrypt.compare(password, user.password).then((matching) => {
         if (!matching) {
-          /*надо обработать ошибку*/
-          throw new Error("misMatch");
+          next(new badAuthError("Неправильный логин или пароль"));
         }
         const token = jwt.sign({ _id: user._id }, "mesto-key");
         res.send(token);
       });
     })
 
-    .catch((err) => userErrorHandler(err, res));
+    .catch(next);
 };

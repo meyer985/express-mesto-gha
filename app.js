@@ -29,10 +29,8 @@ app.use((req, res) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.message === "badAuth") {
-    res.status(401).send({ message: "Ошибка авторизации" });
-  }
-  next();
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send(statusCode === 500 ? "Ошибка сервера" : message);
 });
 
 app.listen(PORT, () => console.log("App is working..."));
