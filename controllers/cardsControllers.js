@@ -6,13 +6,13 @@ const {
   serverError,
 } = require("../utils/errorHandler");
 
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
 
-module.exports.postCard = (req, res) => {
+module.exports.postCard = (req, res, next) => {
   const newCardEntry = req.body;
   newCardEntry.owner = req.user;
 
@@ -21,7 +21,7 @@ module.exports.postCard = (req, res) => {
     .catch(next);
 };
 
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
     .then((card) => {
@@ -38,7 +38,7 @@ module.exports.deleteCard = (req, res) => {
     .catch(next);
 };
 
-module.exports.putLike = (req, res) => {
+module.exports.putLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     {
@@ -57,7 +57,7 @@ module.exports.putLike = (req, res) => {
     .catch(next);
 };
 
-module.exports.deleteLike = (req, res) => {
+module.exports.deleteLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     {

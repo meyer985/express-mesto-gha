@@ -89,7 +89,7 @@ module.exports.login = (req, res, next) => {
             throw new badAuthError("Неправильный логин или пароль");
           }
           const token = jwt.sign({ _id: user._id }, "mesto-key");
-          res.status(200).send(token);
+          res.status(200).send({ token: token });
         })
         .catch(next);
     })
