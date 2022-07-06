@@ -31,14 +31,13 @@ module.exports.addUser = (req, res, next) => {
     .hash(password, 9)
     .then((hash) => User.create({ name, about, avatar, email, password: hash }))
     .then((user) =>
-      res
-        .status(201)
-        .send({
-          name: user.name,
-          about: user.about,
-          avatar: user.avatar,
-          email: user.email,
-        })
+      res.status(201).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      })
     )
     .catch(next);
 };
@@ -98,7 +97,12 @@ module.exports.login = (req, res, next) => {
             throw new badAuthError("Неправильный логин или пароль");
           }
           const token = jwt.sign({ _id: user._id }, "mesto-key");
-          res.status(200).send({ token: token });
+          res
+            .status(200)
+            .cookie("jwt", token, {
+              httpOnly: true,
+            })
+            .end();
         })
         .catch(next);
     })
