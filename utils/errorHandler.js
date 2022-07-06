@@ -3,7 +3,7 @@ const {
   NOT_FOUND_STATUS,
   SERVER_ERROR,
   BAD_AUTH_ERROR,
-} = require("./errorCodes");
+} = require('./errorCodes');
 
 class notFoundError extends Error {
   constructor(message) {
