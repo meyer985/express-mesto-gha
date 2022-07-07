@@ -32,7 +32,11 @@ module.exports.addUser = (req, res, next) => {
   bcrypt
     .hash(password, 9)
     .then((hash) => User.create({
-      name, about, avatar, email, password: hash,
+      name,
+      about,
+      avatar,
+      email,
+      password: hash,
     }))
     .then((user) => res.status(201).send({
       name: user.name,
@@ -104,7 +108,7 @@ module.exports.login = (req, res, next) => {
             .cookie('jwt', token, {
               httpOnly: true,
             })
-            .end();
+            .send({ jwt: token });
         })
         .catch(next);
     })

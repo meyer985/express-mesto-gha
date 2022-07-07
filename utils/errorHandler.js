@@ -3,7 +3,8 @@ const {
   NOT_FOUND_STATUS,
   SERVER_ERROR,
   BAD_AUTH_ERROR,
-} = require('./errorCodes');
+  FORBIDDEN_ERROR,
+} = require("./errorCodes");
 
 class notFoundError extends Error {
   constructor(message) {
@@ -30,6 +31,13 @@ class serverError extends Error {
   constructor(message) {
     super(message);
     this.statusCode = SERVER_ERROR;
+  }
+}
+
+class forbiddenError extends Error {
+  constructor(message) {
+    super(message);
+    this.statusCode = FORBIDDEN_ERROR;
   }
 }
 
@@ -66,4 +74,5 @@ module.exports = {
   badRequestError,
   badAuthError,
   serverError,
+  forbiddenError,
 };
