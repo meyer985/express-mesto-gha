@@ -6,6 +6,7 @@ const userRouter = require('./routs/userRouter');
 const cardsRouter = require('./routs/cardsRouter');
 const { login, addUser } = require('./controllers/userControllers');
 const { auth } = require('./middlewares/auth');
+const { CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR, NOT_FOUND_STATUS } = require('./utils/errorCodes')
 
 const { PORT = 3000 } = process.env;
 
@@ -52,7 +53,7 @@ app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Страница не найдена' });
+  res.status(NOT_FOUND_STATUS).send({ message: 'Страница не найдена' });
 });
 
 app.use(errors());
@@ -60,15 +61,15 @@ app.use(errors());
 app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     res
-      .status(400)
+      .status(BAD_REQUEST_STATUS)
       .send({ message: 'Переданы некорректные данные пользователя' });
   } else if (err.code === 11000) {
-    res.status(409).send({ message: 'Указанный email уже зарегистрирован' });
+    res.status(CONFLICT_REQUEST).send({ message: 'Указанный email уже зарегистрирован' });
   } else {
-    const { statusCode = 500, message } = err;
+    const { statusCode = SERVER_ERROR, message } = err;
     res
       .status(statusCode)
-      .send({ message: statusCode === 500 ? 'Ошибка сервера' : message });
+      .send({ message: statusCode === SERVER_ERROR ? 'Ошибка сервера' : message });
   }
   next();
 });
