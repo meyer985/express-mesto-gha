@@ -57,7 +57,7 @@ app.use((req, res) => {
 
 app.use(errors());
 
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   if (err.name === 'ValidationError') {
     res
       .status(400)
@@ -70,6 +70,7 @@ app.use((err, req, res) => {
       .status(statusCode)
       .send({ message: statusCode === 500 ? 'Ошибка сервера' : message });
   }
+  next();
 });
 
 app.listen(PORT, () => console.log('App is working...'));
