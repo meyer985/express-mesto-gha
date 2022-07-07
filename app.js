@@ -6,7 +6,9 @@ const userRouter = require('./routs/userRouter');
 const cardsRouter = require('./routs/cardsRouter');
 const { login, addUser } = require('./controllers/userControllers');
 const { auth } = require('./middlewares/auth');
-const { CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR, NOT_FOUND_STATUS } = require('./utils/errorCodes')
+const {
+  CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR, NOT_FOUND_STATUS,
+} = require('./utils/errorCodes');
 
 const { PORT = 3000 } = process.env;
 
