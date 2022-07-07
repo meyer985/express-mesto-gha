@@ -19,10 +19,10 @@ module.exports.postCard = (req, res, next) => {
 module.exports.deleteCard = (req, res, next) => {
   const id = req.params.cardId;
   Card.findById(id)
-    .then((card) => {
-      if (!card) {
+    .then((result) => {
+      if (!result) {
         throw new NotFoundError('Карточка не найдена');
-      } else if (req.user._id !== card.owner.toString()) {
+      } else if (req.user._id !== result.owner.toString()) {
         throw new ForbiddenError('Нет прав доступа');
       } else {
         Card.findByIdAndRemove(id)

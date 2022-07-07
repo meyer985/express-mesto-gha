@@ -40,7 +40,7 @@ app.post(
       password: Joi.string().required(),
       name: Joi.string().min(2).max(30),
       about: Joi.string().min(2).max(30),
-      avatar: Joi.string().regex(/https?:\/\/(www.)?\w+.\w+.[\w\-\._~:/?#\[\]@!$&'\(\)*\+,;=]*/),
+      avatar: Joi.string().regex(/https?:\/\/(www.)?\w+.\w+.[\w\-_~:/?#@!$&'*,;=]*/),
     }),
   }),
   addUser,
@@ -57,8 +57,7 @@ app.use((req, res) => {
 
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  console.log(err);
+app.use((err, res) => {
   if (err.name === 'ValidationError') {
     res
       .status(400)
