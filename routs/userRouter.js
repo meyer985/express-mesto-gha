@@ -20,7 +20,11 @@ userRouter.patch(
   }),
   updateUser,
 );
-userRouter.patch('/me/avatar', updateAvatar);
+userRouter.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().regex(/https?:\/\/(www.)?\w+.\w+.[\w\-\._~:/?#\[\]@!$&'\(\)*\+,;=]*/)
+  })
+}), updateAvatar);
 
 userRouter.get(
   '/:userId',
