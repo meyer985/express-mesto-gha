@@ -1,7 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
-const { NotFoundError, BadAuthError } = require('../utils/errors');
+const NotFoundError = require('../utils/errors/NotFoundError');
+const BadAuthError = require('../utils/errors/BadAuthError');
 
 module.exports.getUsers = (req, res, next) => {
   User.find({})
@@ -33,13 +34,9 @@ module.exports.addUser = (req, res, next) => {
       email,
       password: hash,
     }))
-    .then((user) => res.status(201).send({
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      email: user.email,
-      _id: user._id,
-    }))
+    .then((user) => res.status(201).send(
+      user.toJSON(),
+    ))
     .catch(next);
 };
 
@@ -103,7 +100,7 @@ module.exports.login = (req, res, next) => {
             .cookie('jwt', token, {
               httpOnly: true,
             })
-            .send({ jwt: token });
+            .send({ message: 'Авторизация успешна' });
         })
         .catch(next);
     })

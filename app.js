@@ -7,8 +7,9 @@ const cardsRouter = require('./routs/cardsRouter');
 const { login, addUser } = require('./controllers/userControllers');
 const { auth } = require('./middlewares/auth');
 const {
-  CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR, NOT_FOUND_STATUS,
+  CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR,
 } = require('./utils/errorCodes');
+const NotFoundError = require('./utils/errors/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 
@@ -54,8 +55,8 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 
-app.use((req, res) => {
-  res.status(NOT_FOUND_STATUS).send({ message: 'Страница не найдена' });
+app.use(() => {
+  throw new NotFoundError('Страница не найдена');
 });
 
 app.use(errors());

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { BadAuthError } = require('../utils/errors');
+const BadAuthError = require('../utils/errors/BadAuthError');
 
 module.exports.auth = (req, res, next) => {
   if (!req.cookies.jwt) {
