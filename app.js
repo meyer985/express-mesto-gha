@@ -10,11 +10,14 @@ const {
   CONFLICT_REQUEST, BAD_REQUEST_STATUS, SERVER_ERROR,
 } = require('./utils/errorCodes');
 const NotFoundError = require('./utils/errors/NotFoundError');
-const { requestLogger, errorLogger } = require('./middlewares/logger')
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
+const { corsHandler } = require('./middlewares/corsHandler');
 
 const { PORT = 3000 } = process.env;
 
 const app = express();
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   autoIndex: true,
@@ -24,6 +27,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(corsHandler);
 app.use(requestLogger);
 
 /* LOGIN */
@@ -58,7 +62,7 @@ app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 
-app.use(errorLogger)
+app.use(errorLogger);
 
 app.use(() => {
   throw new NotFoundError('Страница не найдена');
